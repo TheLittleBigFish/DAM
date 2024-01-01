@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bootstrap demo</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <script src="https://kit.fontawesome.com/836a8609d4.js" crossorigin="anonymous"></script>
+        <nav class="navbar bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Home Sweet Home</a>
+                <div class="d-flex">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+                            <a class="nav-link" href="#">History</a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </nav>
+        <br>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <h4 class="card-header text-center"><b>Kitchen</b></h4>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i><b>&nbsp;Temperature</b></p>
+                                    <p>5 minutes ago</p>
+                                </div>
+                                <p class="col-md-6 text-end">21.6 °C</p>                               
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-lightbulb"></i><b>&nbsp;Lights</b></p>
+                                    <p>10 minutes ago</p>
+                                </div>
+                                <p class="col-md-6 text-end">Off</p>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><b>West Window</b></p>
+                                    <p>15 minutes ago</p>
+                                </div>
+                                <p class="col-md-6 text-end">Open</p>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><b>North Window</b></p>
+                                    <p>15 minutes ago</p>
+                                </div>
+                                <p class="col-md-6 text-end">Open</p>                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <h4 class="card-header text-center"><b>Living Room</b></h4>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-thermometer-full"></i><b>&nbsp;Temperature</b></p>
+                                    <p>5 minutes ago</p>
+                                </div>
+                                <p class="col-md-6 text-end">22.6 °C</p>                              
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i id="ceilingLRLightsIcon" class="far fa-lightbulb"></i><b>&nbsp;Ceiling Lights</b></p>
+                                    <p id="ceilingLRLightsTime" >7 minutes ago</p>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <a href="#"><i id="ceilingLRLightsToggle" class="fas fa-toggle-off"></i></a>
+                                </div>                             
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="far fa-lightbulb"></i><b>&nbsp;Ambient Lights</b></p>
+                                    <p>7 minutes ago</p>
+                                </div>
+                                <p class="col-md-6 text-end">On</p>                              
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i id="ceilingLRMusicIcon" class="fas fa-music" style="color: #000000;"></i><b>&nbsp;Ceiling Music</b></p>
+                                    <p>17 minutes ago</p>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <a href="#"><i id="ceilingLRMusicToggle" class="fas fa-toggle-off"></i></a>
+                                </div>                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <h4 class="card-header text-center"><b>Clock</b></h4>
+                        <div class="card-body">
+                            <div class="row">
+                                <p class="col-md text-start"><b>Time</b></p>
+                                <p class="col-md text-end" id="Time">22:30</p>                              
+                            </div>
+                            <div class="row">
+                                <p class="col-md text-start"><b>Date</b></p>
+                                <p class="col-md text-end" id="Date">2018-09-18</p>                               
+                            </div>
+                            <div class="row">
+                                <p class="col-md text-start"><b>Sunrise / Sunset above horizon</b></p>
+                                <p class="col-md text-end"></p>                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <h4 class="card-header text-center"><b>Weather</b></h4>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i><b>&nbsp;Current Temperature</b></p>
+                                </div>
+                                <p id="OWMCurrTemp" class="col-md-6 text-end">Dick</p>                               
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i><b>&nbsp;Max. Temperature</b></p>
+                                </div>
+                                <p id="OWMMaxTemp" class="col-md-6 text-end">Dick</p>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i><b>&nbsp;Min. Temperature</b></p>
+                                </div>
+                                <p id="OWMMinTemp" class="col-md-6 text-end">Dick</p>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i><b>&nbsp;Humidity</b></p>
+                                </div>
+                                <p id="OWMHum" class="col-md-6 text-end">Dick</p>                              
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i><b>&nbsp;Sunrise Time</b></p>
+                                </div>
+                                <p id="OWMSunrise" class="col-md-6 text-end">Dick</p>                              
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i><b>&nbsp;Sunset Time</b></p>
+                                </div>
+                                <p id="OWMSunset" class="col-md-6 text-end">Dick</p>                              
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 text-start">
+                                    <p><i class="fas fa-temperature-half"></i>&nbsp;Last Update</p>
+                                </div>
+                                <p id="OWMLastUp" class="col-md-6 text-end">Dick</p>                              
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><input id="OWMInput" type="text"></p>
+                                </div>
+                                <p class="col-md-6"><button id="OWMGet">GET</button></p>                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="js/index.js"></script>
+    </body>
+</html>

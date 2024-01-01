@@ -1,0 +1,33 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 25px;
+}
+
+.form-control, .form-select {
+    border-width: 3px;
+}
+
+.costum-selector {
+    border-width: 3px;
+    max-width: 100px;
+    background-color: darkgreen;
+    color: white;
+    border-radius: 6px;
+    border: 3px solid #dee2e6;
+    padding: 0 10px;
+}
+
+.form-select-costum {
+    --bs-form-select-bg-img: none !important;
+    padding-right: 0.75rem !important;
+    text-align: center;
+    height: 100% !important;
+    /*font-size: 1.5rem !important;*/
+}
+
+.form-select-costum-disabled {
+    --bs-form-select-bg-img: none !important;
+    padding-right: 0.75rem !important;
+    text-align: center;
+}
+
