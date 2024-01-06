@@ -1,0 +1,168 @@
+1- Install firebase npm package (Node.js)
+
+npm install firebase-admin -save
+vs
+npm install firebase
+
+firebase-admin: bypasses all the requirements to access firebase and should only be used by admin
+firebase: use on-site by customers and shit
+
+for this project install firebase-admin
+
+
+
+2- Get Firebase shit
+
+Get the shit below from Firebase, it is usually presented upon the creation of the firebase or
+if you already fucked up and didn't copy this shit when they told you, go to the options (cog 
+next to the house) and go to general, then scroll down and there is the shit.
+
+import { initializeApp } from "firebase/app";
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  ...
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+
+
+3- Get Firebase Realtime Database shit
+
+For this project we use the Realtime Database, so you need to add the next shit to the above code.
+This gets us the access to the database. If you opened your eyes when you created the database you
+saw that the page is empty except for a single url with null in front, guess what, that is your 
+fucking url.
+
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  ...
+  databaseURL: "Your data base url dipshit"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+
+
+4- Node.js can suck it
+
+By now if you tested the server node.js is complaining like a bitch that the import keyword can not
+be used outside of a module, this cancer of an error, that does not explain how to fix itself, is caused
+because node.js runs in ES5 and import is from ES6 or above.
+To fix this 2 things must be made:
+
+First, go to the package.json that is in the same fucking directory as your server and add it to the top object
+"type": "module", now if you put your 2 brain cells to work it should look close to below
+
+{
+  "name": "node_js",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "http": "^0.0.1-security",
+    "ws": "^8.15.1"
+  }
+}
+
+Second, change the .js in your server.js file to a .mjs
+
+When running the server the module problem should vanish and a new different fucking problem should appear
+
+
+
+5- The firebase-admin shit came to bite back
+
+Now in the new error, you might have noticed that node.js can't find the firebase package, this is due to all
+the fucking examples shown by the professor and FIREBASE using the npm install firebase instead of firebase-admin
+fortunately the fix is simple in every import instead of firebase use firebase-admin like below
+
+import { initializeApp } from "firebase-admin/app";
+import { getDatabase } from "firebase-admin/database";
+
+
+
+6- FUCK THIS SHIT
+
+By now a new error must have appeared and nothing seems to work but don't fret it only gets worse. So after doing
+all that shit the solution is to delete everything and start a new one on the server.mjs. Fuck the imports this shit 
+never worked so fuck them add, the changes in the package.json can also go fuck themselves and finally the server 
+name being .mjs can also go fuck itself. With everything as before we started, we can add firebase to the server.
+
+First go, once again, to the options (cog) if you have dementia check step 2. Then go to service accounts in there
+some code exists copy it to the server. Now if you are retarded and tried to get a step ahead of a fucking piece of 
+text you encountered an error, if not congratulations you are incapable of doing anything by yourself. in the 
+var serviceAccount = required(...), the text "path/to/serviceAccountKey.json" can be seen, this, if it's not fucking 
+obvious is where you place the path to the JSON key. The JSON key can be generated in the same place you got the 
+code by clicking the fucking button below it. If you see and click the button (just pass the warning you puss) you
+get a JSON with the key. Now place the JSON somewhere and place the path in the require. 
+
+IMPORTANT: If you have dementia like me and place it in the same directory as the server.js place a "./" before the
+name because node.js only searches the node_modules directory near your server.
+
+
+
+7- OMG I CAN'T BELIEVE IT FINNALY FUCKING WORKS
+
+Now if you did everything correctly node.js should run the server without any problems but we still need to send and
+retrieve shit from the database. The database is structured as a JSON object so make sure to verify if the shit you
+send is compatible with the JSON standard.
+
+To write to the database the set command is used, you can directly write to the database variable created before
+and that puts your data in the main directory, this is great if you only have 1 shit to store but not too practical
+for more. For more the ref command is used in it we place the name of the directory we wanna write to and the shit
+we send is written in that directory, simple right? Below is how to write the codes, and if your variables don't 
+have the same name as mine too bad.
+
+database.set({shit1: "big", shit2: "small", shit3Size: 5});
+database.ref("allTheShits").set({...});
+database.ref("allTheShits/SmallShits").set({...});
+
+Set writes the entire object to the server but if you only want to write some data you can use the child function.
+
+database.child("shit1").set("small");
+
+If you want to only update some data in an object you can use the update function
+
+database.update({shit1: "meh", shit3Size: 1}); shit2 does not get deleted
+
+
+To retrieve the data there are a lot of ways and some are more straight forward than others, but the "once" + "value" is 
+the easiest
+
+database.once("value", (data) =>{});
+
+It is also possible to place listeners in the database for changes in it.
+
+
+For more information on how to use the database go here:
+
+https://firebase.google.com/docs/database/admin/retrieve-data
+
+on the left inside the "Realtime Database"/"Admin" are 4 things that explain how to set up and use the database.
+
+
+

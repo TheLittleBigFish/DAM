@@ -17,8 +17,6 @@ export class TopicContainer {
         this.id = id;
         this.visibleName = visibleName;
         this.APIs = APIs;
-
-        //console.log(RowContainer.prefixRow);
     }
     
     createHTMLString() {
@@ -94,17 +92,41 @@ export class APIContainer {
     static classIdInputHeader = APIContainer.classID + "input";
     static classIdDropBtnHeader = APIContainer.classID + "dropBtn";
     static classIdSizeBtnHeader = APIContainer.classID + "sizeBtn";
+    static classIdAlterBtnHeader = APIContainer.classID + "alterBtn";
     static classIdDelBtnHeader = APIContainer.classID + "delBtn";
     static classIdCardBody = APIContainer.classID + "cardBody";
     static classIdContainerBody = APIContainer.classID + "infContainer-";
     static classIdReadContainerBody = APIContainer.classID + "readContainer";
     static classIdBtnContainerBody = APIContainer.classID + "btnContainer";
     static classIdToggleContainerBody = APIContainer.classID + "toggleContainer";
+    static classIdInputBtnContainerBody = APIContainer.classID + "inputBtnContainer";
+    
 
 
     static colSizesTxt = {1: "Small", 2: "Medium", 3: "Large", 4: "XLarge"};
 
-    static createValsObj = function(type, id, visibleName, code, val = 0, usedInRule = false){return {type: type, id: id, visibleName: visibleName, code: code, val: val, usedInRule: usedInRule}};
+    static createValsObj =  function(type, id, visibleName, code, val = null){
+                                switch (type) {
+                                    case "1":
+                                        val = "Def";
+                                        break;
+                                    case "2":
+                                        val = true;
+                                        break;
+                                    case "3":
+                                        val = false
+                                        break;
+                                    case "4":
+                                        val = "";
+                                        break;
+                                }
+        
+                                return {type: type, 
+                                        id: id, 
+                                        visibleName: visibleName, 
+                                        code: code, 
+                                        val: val}
+                            };
     static valsObjTypesTxt = {1: "Read", 2: "Button", 3: "Toggle"};
 
     /**
@@ -118,11 +140,6 @@ export class APIContainer {
     constructor(id, visibleName, cardSize, link, vals, autoTime) {
         this.id = id;
         this.visibleName = visibleName;
-
-        /* console.debug(size)
-        console.debug(size <= 0)
-        console.debug(size > 4)
-        console.debug(Number.isInteger(size)) */
 
         if (cardSize <= 0 || cardSize > 4 || !(Number.isInteger(cardSize))){
             throw new Error("Size must be int from 1 to 4, size: " + cardSize);
@@ -138,6 +155,27 @@ export class APIContainer {
         return $("#" + this.id);
     }
 
+    getHTMLCardBody() {
+        return $("#" + this.id).find("." + APIContainer.classIdCardBody);
+    }
+
+    setClassIdContainerBodyVals() {
+        this.vals.forEach(valObj => {
+            switch (valObj.type){
+                        case "1":
+                            $("#" + this.id).find("#" + valObj.id).find("." + APIContainer.classIdReadContainerBody).text(valObj.val);
+                            break;
+                        case "3":
+                            $("#" + this.id).find("#" + valObj.id).find("." + APIContainer.classIdToggleContainerBody).prop("checked", valObj.val);
+                            break;
+                        case "4":
+                            $("#" + this.id).find("#" + valObj.id).find("." + APIContainer.classIdInputBtnContainerBody).siblings("input").val(valObj.val);
+                            break;
+                        case "2":
+                    }
+        })  
+    }
+
     #colSize(colType) {
         return ({   "md": (this.cardSize * 6 > 12) ? 12 : this.cardSize * 6,
                     "lg": (this.cardSize * 4 > 12) ? 12 : this.cardSize * 4,
@@ -149,20 +187,21 @@ export class APIContainer {
 
         this.vals.forEach(valObj => {
             let valStr = '<div class="row my-2 mx-0 ' + APIContainer.classIdContainerBody + '" id="' + valObj.id + '"> \
-                        <label class="col-8 col-form-label">' + valObj.visibleName + '</label>'
-
-            console
+                        <label class="col-5 col-form-label">' + valObj.visibleName + '</label>'
 
             switch (valObj.type){
                 case "2": // Button
-                    valStr += (valObj.usedInRule) ? '<span class="col-4 align-self-center text-center text-secondary-emphasis ' + APIContainer.classIdReadContainerBody + '">Auto</span>' : '<button class="btn btn-secondary col-4 ' + APIContainer.classIdBtnContainerBody + '">Send</button>';
+                    valStr += '<button class="btn btn-secondary col-7 ' + APIContainer.classIdBtnContainerBody + '" disabled>Send</button>';
                     break;
                 case "3": // Toggle
-                    valStr += (valObj.usedInRule) ? '<span class="col-4 align-self-center text-center text-secondary-emphasis ' + APIContainer.classIdReadContainerBody + '">Auto</span>' : '<div class="form-check form-switch col-4 align-self-center"><input style="width: 3rem; height: 1.5rem;" class="form-check-input mx-auto ' + APIContainer.classIdToggleContainerBody + '" type="checkbox" role="switch"></div>';
+                    valStr += '<div class="form-check form-switch col-7 align-self-center"><input style="width: 3rem; height: 1.5rem;" class="form-check-input float-end ' + APIContainer.classIdToggleContainerBody + '" type="checkbox" role="switch" disabled ' + ((valObj.val === true) ? "checked" : "") + '></div>';
+                    break;
+                case "4": // Input val
+                    valStr += '<div class="form-check form-switch col-7 align-self-center px-0"><div class="input-group"><input type="text" class="form-control" placeholder="Value send" value="' + valObj.val + '"><button type="button" class="btn btn-secondary ' + APIContainer.classIdInputBtnContainerBody + '" disabled>\>\></button></div></div>';
                     break;
                 case "1": // Read
                 default: // Read
-                    valStr += '<span class="col-4 align-self-center text-center ' + APIContainer.classIdReadContainerBody + '">NAN</span>';
+                    valStr += '<span class="col-7 align-self-center text-center ' + APIContainer.classIdReadContainerBody + '">' + valObj.val + '</span>';
             }
             
             valStr += '</div>';   
@@ -183,13 +222,14 @@ export class APIContainer {
                             <b style="display: none" class="align-self-center ' + APIContainer.classIdBHeader + ' overflow-hidden">' + this.visibleName + '</b>'
         
 
-        if (this.autoTime === 0){APIHTML += '<button style="display: none" type="button" class="btn btn-light fa fa-refresh ms-auto ' + APIContainer.classIdRefreshBtnHeader + '"></button>'}                    
+        if (this.autoTime === 0){APIHTML += '<button style="display: none" type="button" class="btn btn-light fa fa-refresh ms-auto py-0 ' + APIContainer.classIdRefreshBtnHeader + '"></button>'}                    
                             
         APIHTML +=          '<input type="text" class="form-control ' + APIContainer.classIdInputHeader + '" value="' + this.visibleName + '"> \
                             <div class="dropdown align-self-center"> \
                                 <button type="button" class="btn btn-light dropdown-toggle fa fa-cog ' + APIContainer.classIdDropBtnHeader + '" data-bs-toggle="dropdown" aria-expanded="false"></button> \
                                 <ul class="dropdown-menu"> \
                                     <li><a class="dropdown-item ' + APIContainer.classIdSizeBtnHeader + '" href="#">Size: ' + APIContainer.colSizesTxt[this.cardSize] + '</a></li> \
+                                    <li><a class="dropdown-item ' + APIContainer.classIdAlterBtnHeader + '" href="#">Alter Card</a></li> \
                                     <li><a class="dropdown-item ' + APIContainer.classIdDelBtnHeader + '" href="#">Delete Card</a></li> \
                                 </ul> \
                             </div> \
@@ -214,7 +254,6 @@ export class APIContainer {
      * @param {Number} newSize 
      */
     changeColSize(newSize) {
-        //console.error("inside changeColSize, newSize:" + newSize);
         $("#" + this.id).removeClass("col-md-" + this.#colSize("md") + " col-lg-" + this.#colSize("lg") + " col-xl-" + this.#colSize("xl"))
         this.cardSize = newSize;
         $("#" + this.id).addClass("col-md-" + this.#colSize("md") + " col-lg-" + this.#colSize("lg") + " col-xl-" + this.#colSize("xl"))
@@ -226,9 +265,19 @@ export class APIContainer {
         let inputObj = $("#" + this.id).find("." + APIContainer.classIdInputHeader);
         let refreshBtnObj = $("#" + this.id).find("." + APIContainer.classIdRefreshBtnHeader);
 
-        //console.debug(bHeaderObj);
-        //console.debug(inputObj);
-        //console.debug(refreshBtnObj);
+        this.vals.forEach(valObj => {
+            switch (valObj.type) {
+                case "2":
+                    $("#" + valObj.id).find("." + APIContainer.classIdBtnContainerBody).prop("disabled", (i,v) => !v);
+                    break;
+                case "3":
+                    $("#" + valObj.id).find("." + APIContainer.classIdToggleContainerBody).prop("disabled", (i,v) => !v);
+                    break;
+                case "4":
+                    $("#" + valObj.id).find("." + APIContainer.classIdInputBtnContainerBody).prop("disabled", (i,v) => !v);
+                    break;
+            }
+        });
 
         bHeaderObj.toggle();
         inputObj.toggle();
@@ -242,8 +291,6 @@ export class APIContainer {
         if (bHeaderObj.is(':visible')) {
             let newName = inputObj.val();
             bHeaderObj.text(newName);
-
-            //console.warn("Inside vis");
 
             //$("#" + this.id).attr("id", APIContainer.classID + newName);
             this.visibleName = newName;
@@ -269,6 +316,7 @@ export class RuleContainer {
     static classID = "rule-"
     static classIdRow = RuleContainer.classID + "row";
     static classIdCardHeader = RuleContainer.classID + "cardHeader"
+    static classIdRuleOnHeader = RuleContainer.classID + "ruleOn"
     static classIdBHeader = RuleContainer.classID + "b"
     static classIdInputHeader = RuleContainer.classID + "input"
     static classIdDelBtnHeader = RuleContainer.classID + "delBtn"
@@ -279,46 +327,51 @@ export class RuleContainer {
     static classIdCompToValBody = RuleContainer.classID + "compToVal"
     static classIdAPIAlterSelBody = RuleContainer.classID + "APIAlterSel"
     static classIdAPIAlterValSelBody = RuleContainer.classID + "APIAlterValSel"
-    static classIdAPIAlterValToSelBody = RuleContainer.classID + "APIAlterValToSel"
+    static classIdAPIAlterValToValBody = RuleContainer.classID + "APIAlterValToSel"
 
     static compareOperatorValues = {"eq": "&equals;", "gt": "&gt;", "lt": "&lt;", "ge": "&ge;", "le": "&le;"};
 
     /**
      * @param {String} id 
      * @param {String} visibleName 
-     * @param {APIContainer} APICompare 
-     * @param {Number} valCompareIndex of type APIContainer.val
-     * @param {String} compareOperator eq = equal, gt = greater then, lt = less then, ge = greater or equal, le = less or equal 
+     * @param {String} APICompareId 
+     * @param {String} valCompareId 
+     * @param {String} compareOperator 
      * @param {String} compareToValue 
-     * @param {APIContainer} APIAlter 
-     * @param {Number} valAlterIndex of type APIContainer.val
+     * @param {String} APIAlterId 
+     * @param {String} valAlterId 
      * @param {String} alterTo 
+     * @param {Boolean} ruleOn 
      */
-    constructor(id, visibleName, APICompare = null, valCompareIndex = null, compareOperator = null, compareToValue = null, APIAlter = null, valAlterIndex = null, alterTo = null) {
+    constructor(id, visibleName, APICompareId = null, 
+                valCompareId = null, compareOperator = null, 
+                compareToValue = "", APIAlterId = null, 
+                valAlterId = null, alterTo = "", ruleOn = true) {
         this.id = id;
         this.visibleName = visibleName;
 
-        this.APICompare = APICompare;
-        this.valCompareIndex = valCompareIndex;
+        this.APICompareId = APICompareId;
+        this.valCompareId = valCompareId;
         
         this.compareOperator = compareOperator;
         this.compareToValue = compareToValue;
 
-        this.APIAlter = APIAlter;
-        this.valAlterIndex = valAlterIndex;
+        this.APIAlterId = APIAlterId;
+        this.valAlterId = valAlterId;
 
         this.alterTo = alterTo;
 
-        //valAlter.usedInRule = true;
+        this.ruleOn = ruleOn;
     }
 
     createHTMLString () { // row px-2 py-2 gx-0
         return '<div id=' + this.id + ' class="py-2 ' + RuleContainer.classIdRow + '">\
                     <div class="card text-white bg-secondary"> \
-                        <h2 class="card-header d-flex flex-row ' + RuleContainer.classIdCardHeader + '"> \
+                        <h2 class="card-header d-flex flex-row ' + RuleContainer.classIdCardHeader + '" autocomplete="off"> \
+                            <input style="display: none" type="checkbox" class="form-check-input my-1 mx-1 ' + RuleContainer.classIdRuleOnHeader + '" ' + ((this.ruleOn) ? "checked" : "") + '>\
                             <b style="display: none" class="' + RuleContainer.classIdBHeader + ' overflow-hidden">' + this.visibleName + '</b> \
                             <input type="text" class="form-control ' + RuleContainer.classIdInputHeader + '" value="' + this.visibleName + '"> \
-                            <button type="button" id="btn-addRow" class="btn btn-danger fa fa-trash h-100 ' + RuleContainer.classIdDelBtnHeader + '"></button>\
+                            <button type="button" class="btn btn-danger fa fa-trash h-100 ' + RuleContainer.classIdDelBtnHeader + '"></button>\
                         </h2>\
                         <div class="card-body px-2 py-2">\
                             <div class="row row-cols-1 gx-2 gy-2 mx-0">\
@@ -333,14 +386,14 @@ export class RuleContainer {
                                 <div class="col input-group px-0">\
                                     <label class="col-1 input-group-text fw-bold">IS</label>\
                                     <select style="max-width: 17%;" class="col-2 form-select form-select-costum ' + RuleContainer.classIdCompOpSelBody + '" data-width="auto">\
-                                        <option value="eq" selected>&equals;</option>\
-                                        <option value="gt">&gt;</option>\
-                                        <option value="lt">&lt;</option>\
-                                        <option value="ge">&ge;</option>\
-                                        <option value="le">&le;</option>\
+                                        <option value="eq" ' + ((this.compareOperator === "eq") ? "selected" : "") + '>&equals;</option>\
+                                        <option value="gt" ' + ((this.compareOperator === "gt") ? "selected" : "") + '>&gt;</option>\
+                                        <option value="lt" ' + ((this.compareOperator === "lt") ? "selected" : "") + '>&lt;</option>\
+                                        <option value="ge" ' + ((this.compareOperator === "ge") ? "selected" : "") + '>&ge;</option>\
+                                        <option value="le" ' + ((this.compareOperator === "le") ? "selected" : "") + '>&le;</option>\
                                     </select>\
                                     <label class="col-1 input-group-text fw-bold">TO</label>\
-                                    <input style="max-width: 25%;" type="text" class="col-9 form-control text-center ' + RuleContainer.classIdCompToValBody + '" placeholder="Expected Value">\
+                                    <input style="max-width: 25%;" type="text" class="col-9 form-control text-center ' + RuleContainer.classIdCompToValBody + '" placeholder="Expected Value" value="' + this.compareToValue + '">\
                                 </div>\
                                 <div class="col input-group px-0">\
                                     <label class="col-1 input-group-text fw-bold">THEN</label>\
@@ -352,17 +405,17 @@ export class RuleContainer {
                                 </div>\
                                 <div class="col input-group px-0">\
                                     <label class="col-1 input-group-text fw-bold">IS</label>\
-                                    <select style="max-width: 17%;" class="col-2 form-select ' + RuleContainer.classIdAPIAlterValToSelBody + '">\
-                                        <option value="1" selected>ON</option>\
-                                        <option value="2">OFF</option>\
-                                        <option style="display: none;" value="3">Triggered</option>\
-                                    </select>\
+                                    <input style="max-width: 25%;" type="text" class="col-2 form-control text-center ' + RuleContainer.classIdAPIAlterValToValBody + '" placeholder="Expected Value" value="' + this.alterTo + '">\
                                 </div>\
                             </div>\
                         </div>\
                     </div>\
                 </div>'
     }
+
+    getHTMLTop() {
+        return $("#" + this.id);
+    };
 
     static arrPopulatedAPIs = [];
 
@@ -372,18 +425,19 @@ export class RuleContainer {
     populateAPIDropdownLists(arrTopics){
         let allAPI = arrTopics.flatMap(topicObj => topicObj.APIs);
         RuleContainer.arrPopulatedAPIs = allAPI;
-        console.debug(JSON.stringify(allAPI));
+        //console.debug(JSON.stringify(allAPI));
 
+        
         let seletedCompIndex = 0;
-        if (this.APICompare !== null){
-            seletedCompIndex = allAPI.findIndex(APIObj => APIObj.id === this.APICompare.id)
+        if (this.APICompareId !== null){
+            seletedCompIndex = allAPI.findIndex(APIObj => APIObj.id === this.APICompareId)
         }
 
         let seletedAlterIndex = 0;
-        if (this.APIAlter !== null){
-            seletedAlterIndex = allAPI.findIndex(APIObj => APIObj.id === this.APIAlter.id)
+        if (this.APIAlterId !== null){
+            seletedAlterIndex = allAPI.findIndex(APIObj => APIObj.id === this.APIAlterId)
         }
-
+        
         let thisObj = $("#" + this.id);
         thisObj.find("." + RuleContainer.classIdAPICompSelBody).empty();
         thisObj.find("." + RuleContainer.classIdAPIAlterSelBody).empty();
@@ -409,55 +463,63 @@ export class RuleContainer {
             throw new RangeError("listType must be 'IF' or 'THEN'")
         }
 
-        
         let thisObj = $("#" + this.id);
-
-        let seletedIndex = 0;
-
-        
 
         if (listType === "IF"){
             thisObj.find("." + RuleContainer.classIdAPICompValSelBody).empty();
-            if (this.valCompareIndex !== null){
-                seletedIndex = this.valCompareIndex;
-            }
-
-            console.error(seletedIndex);
 
             APIObj.vals.forEach((valObj, index) => {
-                console.error(((index === seletedIndex) ? "selected" : ""));
-                thisObj.find("." + RuleContainer.classIdAPICompValSelBody).append('<option value="' + index + '" ' + ((index === seletedIndex) ? "selected" : "") + '>' + valObj.visibleName + '</option>');
+                console.error(valObj.id);
+                console.error(this.valCompareId);
+                thisObj.find("." + RuleContainer.classIdAPICompValSelBody).append('<option value="' + index + '" ' + ((valObj.id === this.valCompareId) ? "selected" : "") + '>' + valObj.visibleName + '</option>');
             })
         } else {
             thisObj.find("." + RuleContainer.classIdAPIAlterValSelBody).empty();
-            if (this.valAlterIndex !== null){
-                seletedIndex = this.valAlterIndex
-            }
 
             APIObj.vals.forEach((valObj, index) => {
-                thisObj.find("." + RuleContainer.classIdAPIAlterValSelBody).append('<option value="' + index + '" ' + ((index === seletedIndex) ? "selected" : "") + '>' + valObj.visibleName + '</option>');
+
+                thisObj.find("." + RuleContainer.classIdAPIAlterValSelBody).append('<option value="' + index + '" ' + ((valObj.id === this.valAlterId) ? "selected" : "") + '>' + valObj.visibleName + '</option>');
             })
         }
     }
 
     toggleRuleOptions() {
         let thisObj = $("#" + this.id);
-        let bHeaderObj = thisObj.find("." + RuleContainer.classIdInputHeader).toggle();
-        let inputObj = thisObj.find("." + RuleContainer.classIdBHeader).toggle();
+
+        thisObj.find("." + RuleContainer.classIdRuleOnHeader).toggle();
+
+        let inputObj = thisObj.find("." + RuleContainer.classIdInputHeader);
+        inputObj.toggle()
+
+        let bHeaderObj = thisObj.find("." + RuleContainer.classIdBHeader);
+        bHeaderObj.toggle()
+        
         thisObj.find("." + RuleContainer.classIdDelBtnHeader).toggle();
 
-
-        let APICompObj = thisObj.find("." + RuleContainer.classIdAPICompSelBody).prop("disabled", (i, v) => !v);
+        let APICompObj = thisObj.find("." + RuleContainer.classIdAPICompSelBody)
+        APICompObj.prop("disabled", (i, v) => !v);
         APICompObj.toggleClass("form-select-costum-disabled");
-        let APICompValObj = thisObj.find("." + RuleContainer.classIdAPICompValSelBody).prop("disabled", (i, v) => !v);
+
+        let APICompValObj = thisObj.find("." + RuleContainer.classIdAPICompValSelBody)
+        APICompValObj.prop("disabled", (i, v) => !v);
         APICompValObj.toggleClass("form-select-costum-disabled");
-        let compOpObj = thisObj.find("." + RuleContainer.classIdCompOpSelBody).prop("disabled", (i, v) => !v);
-        let compToValObj = thisObj.find("." + RuleContainer.classIdCompToValBody).prop("disabled", (i, v) => !v);
-        let APIAlterObj = thisObj.find("." + RuleContainer.classIdAPIAlterSelBody).prop("disabled", (i, v) => !v);
+
+        let compOpObj = thisObj.find("." + RuleContainer.classIdCompOpSelBody)
+        compOpObj.prop("disabled", (i, v) => !v);
+
+        let compToValObj = thisObj.find("." + RuleContainer.classIdCompToValBody)
+        compToValObj.prop("disabled", (i, v) => !v);
+
+        let APIAlterObj = thisObj.find("." + RuleContainer.classIdAPIAlterSelBody)
+        APIAlterObj.prop("disabled", (i, v) => !v);
         APIAlterObj.toggleClass("form-select-costum-disabled");
-        let APIAlterValObj = thisObj.find("." + RuleContainer.classIdAPIAlterValSelBody).prop("disabled", (i, v) => !v);
+
+        let APIAlterValObj = thisObj.find("." + RuleContainer.classIdAPIAlterValSelBody)
+        APIAlterValObj.prop("disabled", (i, v) => !v);
         APIAlterValObj.toggleClass("form-select-costum-disabled");
-        let APIAlterValToObj = thisObj.find("." + RuleContainer.classIdAPIAlterValToSelBody).prop("disabled", (i, v) => !v);
+
+        let APIAlterValToObj = thisObj.find("." + RuleContainer.classIdAPIAlterValToValBody)
+        APIAlterValToObj.prop("disabled", (i, v) => !v);
         APIAlterValToObj.toggleClass("form-select-costum-disabled");
 
         if (bHeaderObj.is(':visible')) {
@@ -465,14 +527,14 @@ export class RuleContainer {
             bHeaderObj.text(newName);
 
             this.visibleName = newName;
-            this.APICompare = RuleContainer.arrPopulatedAPIs[APICompObj.val()];
-            this.valCompareIndex = Number.parseInt(APICompValObj.val());
+            this.APICompareId = RuleContainer.arrPopulatedAPIs[APICompObj.val()].id;
+            this.valCompareId = RuleContainer.arrPopulatedAPIs[APICompObj.val()].vals[APICompValObj.val()].id;
 
             this.compareOperator = compOpObj.val();
             this.compareToValue = compToValObj.val();
 
-            this.APIAlter = RuleContainer.arrPopulatedAPIs[APIAlterObj.val()];
-            this.valAlterIndex = Number.parseInt(APIAlterValObj.val());
+            this.APIAlterId = RuleContainer.arrPopulatedAPIs[APIAlterObj.val()].id;
+            this.valAlterId = RuleContainer.arrPopulatedAPIs[APIAlterObj.val()].vals[APIAlterValObj.val()].id;
 
             this.alterTo = APIAlterValToObj.val();
         } 
@@ -481,24 +543,26 @@ export class RuleContainer {
     toJSON() {
         return {id: this.id,
                 visibleName: this.visibleName,
-                APICompare: this.APICompare,
-                valCompare: this.valCompare,
+                APICompareId: this.APICompareId,
+                valCompareId: this.valCompareId,
                 compareOperator: this.compareOperator,
                 compareToValue: this.compareToValue,
-                APIAlter: this.APIAlter,
-                valAlter: this.valAlter,
-                alterTo: this.alterTo};
+                APIAlterId: this.APIAlterId,
+                valAlterId: this.valAlterId,
+                alterTo: this.alterTo,
+                ruleOn: this.ruleOn};
     }
 
     static fromJSON(ruleJSON) {
         return new RuleContainer(ruleJSON.id,
                                     ruleJSON.visibleName, 
-                                    ruleJSON.APICompare, 
-                                    ruleJSON.valCompare, 
+                                    ruleJSON.APICompareId, 
+                                    ruleJSON.valCompareId, 
                                     ruleJSON.compareOperator, 
                                     ruleJSON.compareToValue, 
-                                    ruleJSON.APIAlter, 
-                                    ruleJSON.valAlter, 
-                                    ruleJSON.alterTo);
+                                    ruleJSON.APIAlterId, 
+                                    ruleJSON.valAlterId, 
+                                    ruleJSON.alterTo,
+                                    ruleJSON.ruleOn);
     }
 }

@@ -1,18 +1,17 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCoJdSUuF_eyMYfYJ36StRihDCzTR6AdAc",
-    authDomain: "cad2324-2223239.firebaseapp.com",
-    databaseURL: "https://cad2324-2223239-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "cad2324-2223239",
-    storageBucket: "cad2324-2223239.appspot.com",
-    messagingSenderId: "1034027560231",
-    appId: "1:1034027560231:web:083475ff861331c52f4d02"
-  };
-  
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
+  apiKey: "AIzaSyCF1Kkpe5FQmjAru0N4M5COJbPyKbfZTaE",
+  authDomain: "finalworkhtm.firebaseapp.com",
+  projectId: "finalworkhtm",
+  storageBucket: "finalworkhtm.appspot.com",
+  messagingSenderId: "844703156156",
+  appId: "1:844703156156:web:4230cb84f119f5133f8db9"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
